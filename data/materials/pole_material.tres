@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://brvo57dx5ugrw"]
+
+[ext_resource type="Texture2D" uid="uid://c2yeqjm2e1krw" path="res://data/textures/uvgrid_01.jpg" id="1_bfa1x"]
+
+[resource]
+albedo_color = Color(0.839216, 0, 0.239216, 1)
+roughness = 0.47
+emission_texture = ExtResource("1_bfa1x")

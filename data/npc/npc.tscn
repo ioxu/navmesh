@@ -1,0 +1,72 @@
+[gd_scene load_steps=8 format=3 uid="uid://cfac2vh804qfs"]
+
+[ext_resource type="Script" path="res://data/npc/npc.gd" id="1_xbo14"]
+[ext_resource type="Script" path="res://data/npc/nav_indicator.gd" id="2_ujrqv"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_xifdf"]
+radius = 0.2
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nwtsn"]
+albedo_color = Color(0, 0, 0, 1)
+metallic_specular = 1.0
+roughness = 0.3
+emission_enabled = true
+emission = Color(0.721569, 0.12549, 0.258824, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_etswx"]
+margin = 0.1
+radius = 0.216776
+height = 1.03319
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kc3ou"]
+transparency = 1
+albedo_color = Color(0, 0, 0, 0.847059)
+emission_enabled = true
+emission = Color(0.603922, 0.729412, 0.996078, 1)
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_mxvd0"]
+
+[node name="npc" type="CharacterBody3D" groups=["npcs"]]
+floor_stop_on_slope = false
+floor_block_on_wall = false
+floor_max_angle = 0.959931
+floor_snap_length = 1.0
+script = ExtResource("1_xbo14")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_xifdf")
+surface_material_override/0 = SubResource("StandardMaterial3D_nwtsn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_etswx")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.75
+target_desired_distance = 2.0
+agent_height_offset = 0.1
+path_max_distance = 2.01
+radius = 0.35
+neighbor_distance = 5.0
+max_neighbors = 12
+time_horizon = 5.0
+ignore_y = false
+debug_enabled = true
+debug_use_custom = true
+debug_path_custom_color = Color(1, 0.733333, 0, 0.0470588)
+debug_path_custom_point_size = 3.0
+
+[node name="nav_indicator" type="MeshInstance3D" parent="."]
+visible = false
+material_override = SubResource("StandardMaterial3D_kc3ou")
+mesh = SubResource("ImmediateMesh_mxvd0")
+script = ExtResource("2_ujrqv")
+
+[node name="stuck_timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
+[connection signal="path_changed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_path_changed"]
+[connection signal="target_reached" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_target_reached"]
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
+[connection signal="waypoint_reached" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_waypoint_reached"]

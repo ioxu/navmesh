@@ -1,0 +1,30 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Navmesh"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.0", "Forward Plus")
+config/icon="res://icon.svg"
+
+[debug]
+
+shapes/navigation/geometry_edge_color=Color(0.72549, 0.435294, 0.529412, 0.0156863)
+shapes/navigation/geometry_face_color=Color(0.501961, 1, 1, 0.0588235)
+shapes/navigation/enable_geometry_face_random_color=false
+shapes/navigation/enable_agent_paths_xray=false
+
+[rendering]
+
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=5
+lights_and_shadows/positional_shadow/soft_shadow_filter_quality=5
+anti_aliasing/quality/msaa_2d=1
+anti_aliasing/quality/msaa_3d=1
