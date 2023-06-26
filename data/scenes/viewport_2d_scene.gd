@@ -13,6 +13,8 @@ var dim := Vector2(-5, 5)
 
 var ipos_jitter := 1.5
 
+var gtime := 0.0
+
 func _ready():
 	
 	await get_tree().create_timer(0.1).timeout
@@ -28,20 +30,27 @@ func _ready():
 
 
 func _process(delta):
+	gtime += delta
 	var v : Vector3
 	var ipos : Vector2
 	
 	#var ti := target_indicator.global_transform.origin
 	#target_indicator_sprite.position = Vector2(remap(ti.x, -20, 20, 0, 2048), remap(ti.z, -20, 20, 0, 2048))
 	
-	for i in range(agents.size()):
+	var nagents = agents.size()
+	
+	#print("gtime mod %s"%(fmod(gtime, 1.0))  )
+	
+	for i in range(nagents):
 		v = agents[i].global_transform.origin
 		ipos = Vector2( remap(v.x, -20, 20, 0, 2048), remap(v.z, -20, 20, 0, 2048) )
 		
 		# avoid drawing heavy dots when standing almost still
 		if (pos[i] - ipos).length() > 1.0 and not agents[i].target_has_been_reached:
 			pos[i] = ipos
-			sprites[i].modulate = Color(1.0, 1.0, 1.0, randf_range(2.0/255.0, 3.0/255.0))
+			#sprites[i].modulate = Color(1.0, 1.0, 1.0, randf_range(2.0/255.0, 3.0/255.0))
+			#sprites[i].modulate = Color.from_hsv( i/float(nagents), 0.9, 0.75, randf_range(2.0/255.0, 3.0/255.0) )
+			sprites[i].modulate = Color.from_hsv( fmod(gtime*0.001, 1.0)  , 1.0, 1.0, randf_range(2.0/255.0, 10.0/255.0) )
 			sprites[i].position = ipos + Vector2(randf_range(-ipos_jitter, ipos_jitter), randf_range(-ipos_jitter, ipos_jitter))
 		else:
 			sprites[i].position = Vector2(-3000,-3000)

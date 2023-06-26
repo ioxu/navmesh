@@ -51,7 +51,6 @@ neighbor_distance = 5.0
 max_neighbors = 12
 time_horizon = 5.0
 ignore_y = false
-debug_enabled = true
 debug_use_custom = true
 debug_path_custom_color = Color(1, 0.733333, 0, 0.0470588)
 debug_path_custom_point_size = 3.0

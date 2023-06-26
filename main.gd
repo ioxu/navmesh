@@ -1,6 +1,6 @@
 extends Node3D
 
-var SHOW_NAVMESH = true
+var SHOW_NAVMESH = false
 
 var navregion : NavigationRegion3D
 var navmesh_vismesh : MeshInstance3D
@@ -28,13 +28,15 @@ func _ready():
 		d.rotation_degrees = Vector3(randf_range(-_rotxz,_rotxz), randf_range(-180,180), randf_range(-_rotxz,_rotxz))
 		d.global_transform.origin = Vector3( randf_range( -20, 20 ), randf_range(-3.0, 1.5), randf_range(-20, 20) )
 
+
 	_rotxz = 15
-	for i in range(120):
+	for i in range(175): #120):
 		var d = oblock.duplicate()
 		_p.add_child( d )
 		d.rotation_degrees = Vector3(randf_range(-_rotxz,_rotxz), randf_range(-180,180), randf_range(-_rotxz,_rotxz))
 		d.scale = Vector3(1.5, 1.0, 1.5)
-		d.global_transform.origin = Vector3( randf_range( -20, 20 ), 0.15, randf_range(-20, 20) )
+		#d.global_transform.origin = Vector3( randf_range( -20, 20 ), 0.15, randf_range(-20, 20) )
+		d.global_transform.origin = Vector3( randf_range( -20, 20 ), randf_range(0.15,0.45), randf_range(-20, 20) )
 
 
 	pole = find_child("pole")
@@ -125,7 +127,7 @@ func _on_bake_finished() -> void:
 func _on_target_timer_timeout() -> void:
 	#print("_on_target_timer_timeout")
 	#var pos : Vector3 = Vector3( randf_range( -20, 20 ), 0.0, randf_range( -20, 20 ) )
-	var pos : Vector3 = Vector3( randf_range( 18.0, 5.0 ), 0.0, 0.0 ).rotated( Vector3.UP, randf()*2*PI)
+	var pos : Vector3 = Vector3( randf_range( 19.5, 6.0 ), 0.0, 0.0 ).rotated( Vector3.UP, randf()*2*PI)
 	target_indicator.global_transform.origin = pos
 	#get_tree().call_group( "npcs", "update_target_location", pos + Vector3( randf_range(-3.0, 3.0), 0.0, randf_range(-3.0, 3.0) ) )
 	var npcs : Array = get_tree().get_nodes_in_group("npcs")

@@ -3,7 +3,8 @@ extends CharacterBody3D
 var colour_default := Color(0.89527487754822, 0, 0.35892423987389)
 var colour_reached_target := Color(0.06159999221563, 0.87999999523163, 0.08887995779514)
 var colour_navigation_finished := Color(0.9200000166893, 0.5731600522995, 0.11959999799728)
-var color_stick_timer_timeout := Color(0.17999997735023, 0.25200006365776, 0.89999997615814)
+var color_stuck_timer_timeout := Color(0.17999997735023, 0.25200006365776, 0.89999997615814)
+var color_stuck_angled_timer_timeout := Color(0.91000002622604, 0.54600006341934, 0)
 
 const SPEED = 10.0#15.0
 const JUMP_VELOCITY = 4.5
@@ -15,6 +16,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var previous_waypoint : Vector3
 var jump := Vector3.ZERO
+var jump_vector := Vector3.UP
 var do_jump := false
 
 var target_has_been_reached := false
@@ -34,8 +36,27 @@ func _ready():
 
 func _on_stuck_timer_timeout() -> void:
 	$stuck_timer.wait_time = randf_range( 0.25, 1.5 )
+	
+		
 	if not target_has_been_reached:
-		set_colour( color_stick_timer_timeout )
+
+		# get navpath
+		var last_pos = nav_agent.get_final_position() #get_current_navigation_path()
+		var dir_to_target = nav_agent.target_position - last_pos
+		var dist_to_target = dir_to_target.length()
+		
+		# if far away, jump at an angle toward target
+		if dist_to_target > 1.5:
+			#print("distance to target_position: %0.2f"% dist_to_target )
+			set_colour( color_stuck_angled_timer_timeout )
+			jump_vector = Vector3.UP.slerp( dir_to_target.normalized(), 0.25 ).normalized()
+			
+			await get_tree().create_timer(0.15).timeout
+			update_target_location( nav_agent.target_position )
+		else:
+			set_colour( color_stuck_timer_timeout )
+			jump_vector = Vector3.UP
+
 		do_jump = true
 
 
@@ -66,7 +87,7 @@ func _physics_process(delta):
 	velocity = velocity.move_toward( new_velocity, 0.5) #0.75 )
 	velocity += Vector3.UP * -9.8 *0.25
 	if do_jump:
-		velocity += Vector3.UP * 30.0
+		velocity += jump_vector * 30.0
 		do_jump = false
 	move_and_slide()
 	#nav_agent.set_velocity(velocity)
@@ -75,7 +96,7 @@ func _physics_process(delta):
 	if global_transform.origin.y < -50.0:
 		print("RESPAWN")
 		global_transform.origin = Vector3(randf_range(-10.0, 10.0), 15.0, randf_range(-10.0, 10.0))
-		velocity = velocity * Vector3(1.0, 0.0, 1.0)
+		velocity = velocity * Vector3(0.0, 0.0, 0.0)
 		update_target_location( nav_agent.target_position )
 
 
